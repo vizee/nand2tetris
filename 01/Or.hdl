@@ -4,12 +4,14 @@
 // File name: projects/01/Or.hdl
 /**
  * Or gate:
- * out = (((a == 1) || (b == 1))), 1, 0) 
+ * out = (((a == 1) || (b == 1))), 1, 0)
  */
 CHIP Or {
     IN a, b;
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    Not(in=a, out=notA);
+    Not(in=b, out=notB);
+    Nand(a=notA, b=notB, out=out);
 }

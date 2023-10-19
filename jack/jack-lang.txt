@@ -1,0 +1,68 @@
+TOP-LEVEL = CLASS ;
+
+CLASS = "class" IDENT "{" ( FIELD | STATIC | SUBROUTINE )* "}" ;
+
+FIELD = "field" TYPE IDENT  ";" ;
+
+TYPE = "int" | "boolean" | "char" | "void" | IDENT ;
+
+STATIC = "static" TYPE IDENT ";" ;
+
+SUBROUTINE = ("constructor" | "function" | "method") TYPE IDENT "(" PARAM-LIST? ")" BLOCK ;
+
+PARAM-LIST = TYPE IDENT ( "," TYPE IDENT )* ;
+
+BLOCK = "{" STATEMENT* "}" ;
+
+STATEMENT = ";" | EXPR ";" | BLOCK |
+            IF-STATEMENT |
+            WHILE-STATEMENT |
+            LOOP-FLOW-STATEMENT |
+            VAR-STATEMENT |
+            LET-STATEMENT |
+            DO-STATEMENT |
+            RETURN-STATEMENT ;
+
+IF-STATEMENT = "if" "(" EXPR ")" BLOCK
+            ( "else" ( IF-STATEMENT | BLOCK ) )? ;
+
+WHILE-STATEMENT = "while" "(" EXPR ")" BLOCK ;
+
+LOOP-FLOW-STATEMENT = ( "break" | "continue" ) ";" ;
+
+VAR-STATEMENT = "var" TYPE IDENT ( "," IDENT )* ";" ;
+
+LET-STATEMENT = "let" PRIMARY "=" EXPR ";" ;
+
+DO-STATEMENT = "do" ( PRIMARY "=" )? CALL-EXPR ";" ;
+
+RETURN-STATEMENT = "return" EXPR? ";" ;
+
+EXPR-LIST = EXPR ( "," EXPR )* ;
+
+EXPR = UNARY-EXPR | EXPR BIN-OP EXPR ;
+
+BIN-OP = "+" | "-" | "*" | "/" | "&" | "|" | "=" | "<" | ">";
+
+UNARY-EXPR = PRIMARY | UNARY-OP UNARY-EXPR ;
+
+UNARY-OP = "~" | "-" ;
+
+PRIMARY = LITERAL |
+        CONSTANT |
+        "this" |
+        IDENT |
+        "(" EXPR ")" |
+        INDEX-EXPR |
+        MEMBER-EXPR |
+        CALL-EXPR ;
+
+MEMBER-EXPR = PRIMARY "." IDENT ;
+
+INDEX-EXPR = PRIMARY "[" EXPR "]" ;
+
+CALL-EXPR = PRIMARY "(" EXPR-LIST? ")" ;
+
+CONSTANT = "true" | "false" | "null" ;
+
+LITERAL = integer-literal | string-literal .

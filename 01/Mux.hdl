@@ -2,7 +2,7 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/Mux.hdl
-/** 
+/**
  * Multiplexor:
  * out = ((sel == 0), a, b)
  */
@@ -11,5 +11,8 @@ CHIP Mux {
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    Not(in=sel, out=notSel);
+    Nand(a=notSel, b=a, out=selA);
+    Nand(a=sel, b=b, out=selB);
+    Nand(a=selA, b=selB, out=out);
 }

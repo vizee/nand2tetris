@@ -27,10 +27,27 @@ CHIP CPU {
                          // the current program (reset==0).
 
     OUT outM[16],        // M value output
-        writeM,          // Write to M? 
+        writeM,          // Write to M?
         addressM[15],    // Address in data memory (of M)
         pc[15];          // Address of next instruction
 
     PARTS:
-    //// Replace this comment with your code.
+    Mux16(a=ar, b=inM, sel=instruction[12], out=am);
+    ALU(x=dr, y=am, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=aluOut, out=outM, zr=zero, ng=neg);
+    And(a=instruction[15], b=instruction[3], out=writeM);
+    Mux16(a=instruction, b=aluOut, sel=instruction[15], out=aIn);
+    Not(in=instruction[15], out=isAInstr);
+    Or(a=isAInstr, b=instruction[5], out=loadA);
+    ARegister(in=aIn, load=loadA, out=ar, out[0..14]=addressM);
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    DRegister(in=aluOut, load=loadD, out=dr);
+    And(a=instruction[2], b=neg, out=jlt);
+    And(a=instruction[1], b=zero, out=jeq);
+    Or(a=neg, b=zero, out=negOrZero);
+    Not(in=negOrZero, out=pos);
+    And(a=instruction[0], b=pos, out=jgt);
+    Or(a=jlt, b=jeq, out=jle);
+    Or(a=jle, b=jgt, out=jmp);
+    And(a=instruction[15], b=jmp, out=loadPC);
+    PC(in=ar, load=loadPC, inc=true, reset=reset, out[0..14]=pc);
 }
